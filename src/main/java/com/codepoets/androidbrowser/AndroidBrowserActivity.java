@@ -2,8 +2,10 @@ package com.codepoets.androidbrowser;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import com.codepoets.websimple.http.HttpServer;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -24,7 +26,7 @@ public class AndroidBrowserActivity extends Activity {
         try {
             NetworkInterface iface = NetworkInterface.getByName("lo");
             int port = 6000;
-            serverThread = new WebServerThread(iface.getInetAddresses().nextElement(), port);
+            serverThread = new WebServerThread(this, logger, iface.getInetAddresses().nextElement(), port);
             serverThread.setDaemon(false);
             serverThread.start();
         } catch (SocketException e) {
@@ -32,12 +34,15 @@ public class AndroidBrowserActivity extends Activity {
         }
 	}
 
-    class WebServerThread extends Thread {
+    static class WebServerThread extends Thread {
+        private Context context;
+        private Logger logger;
         private InetAddress inetAddress;
         private int port;
 
-        public WebServerThread(InetAddress inetAddress, int port) {
-
+        public WebServerThread(Context context, Logger logger, InetAddress inetAddress, int port) {
+            this.context = context;
+            this.logger = logger;
             this.inetAddress = inetAddress;
             this.port = port;
         }
@@ -45,8 +50,8 @@ public class AndroidBrowserActivity extends Activity {
         @Override
         public void run() {
             HttpServer httpServer = new HttpServer(Arrays.asList(new InetAddress[] { inetAddress }), port, "AndroidBrowserServer/1.0");
-            httpServer.init();
             try {
+                httpServer.init(context);
                 httpServer.run();
             } catch (IOException e) {
                 logger.error("Http Server error:", e);

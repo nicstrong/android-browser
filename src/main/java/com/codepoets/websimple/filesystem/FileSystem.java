@@ -1,7 +1,8 @@
 package com.codepoets.websimple.filesystem;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface FileSystem {
-    String[] getFiles() throws IOException;
+    List<String> getFiles() throws IOException;
 }
