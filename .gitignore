@@ -1,0 +1,16 @@
+.project
+.classpath
+.settings
+.DS_Store
+default.properties
+target/
+bin/
+.idea/
+gen/
+*.orig
+R.java
+*.iml
+*.ipr
+*.iws
+backup/inst.bat
+
