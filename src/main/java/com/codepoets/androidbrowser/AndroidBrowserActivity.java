@@ -6,6 +6,8 @@ import android.content.Context;
 import android.os.Bundle;
 import com.codepoets.websimple.http.HttpServer;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.spi.LoggerFactoryBinder;
 
 import java.io.IOException;
 import java.net.InetAddress;

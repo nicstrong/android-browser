@@ -2,8 +2,7 @@ package com.codepoets.websimple.android;
 
 import com.codepoets.websimple.filesystem.FileSystemFile;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.codepoets.websimple.filesystem.FileSystemUtils.join;
 import static org.apache.commons.io.FilenameUtils.concat;
@@ -14,7 +13,7 @@ public class AssetManagerFile implements FileSystemFile {
 	private String basePath;
 	private String path;
     private boolean directory;
-    private List<AssetManagerFile> entries;
+    private Map<String, AssetManagerFile> entries;
 
     public AssetManagerFile(String root, String basePath, String path) {
         this(root, basePath, path, false);
@@ -25,7 +24,7 @@ public class AssetManagerFile implements FileSystemFile {
 	    this.basePath = basePath;
 	    this.path = path;
         this.directory = directory;
-	    this.entries = new ArrayList<AssetManagerFile>();
+	    this.entries = new HashMap<String, AssetManagerFile>();
     }
 
     @Override
@@ -38,7 +37,7 @@ public class AssetManagerFile implements FileSystemFile {
     }
 
 	public void addEntry(AssetManagerFile file) {
-		entries.add(file);
+		entries.put(file.path, file);
 	}
 
     public String getInternalPath() {
@@ -46,7 +45,6 @@ public class AssetManagerFile implements FileSystemFile {
 		    return root;
 	    }
         if (path == null) {
-
 	        return concat(root, basePath);
         }
         return join(join(root, basePath), path);
@@ -61,8 +59,15 @@ public class AssetManagerFile implements FileSystemFile {
     }
 
 	@Override
-	public List<? extends FileSystemFile> getEntries() {
-		return entries;
+	public Collection<? extends FileSystemFile> getEntries() {
+		return entries.values();
+	}
+
+	public AssetManagerFile find(String child) {
+		if (entries.containsKey(child)) {
+			return entries.get(child);
+		}
+		return null;
 	}
 
 	@Override

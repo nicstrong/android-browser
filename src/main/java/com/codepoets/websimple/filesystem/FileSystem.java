@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface FileSystem {
 	FileSystemFile root() throws IOException;
+	boolean exists(String path);
 }

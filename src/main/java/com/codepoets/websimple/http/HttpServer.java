@@ -58,8 +58,6 @@ public class HttpServer {
         httpService = new HttpService(httpProcessor, new DefaultConnectionReuseStrategy(), new DefaultHttpResponseFactory());
         httpService.setParams(this.params);
         httpService.setHandlerResolver(handlerResolver);
-
-	    FileSystemUtils.dump(logger, fileSystem.root());
     }
 
     public void run() throws IOException {
@@ -87,10 +85,9 @@ public class HttpServer {
                     DefaultHttpServerConnection conn = new DefaultHttpServerConnection();
                     conn.bind(socket, this.params);
 
-                    // Start worker thread
-//                    Thread t = new RequestWorkerThread(this.httpService, conn);
-//                    t.setDaemon(true);
-//                    t.start();
+                    Thread t = new RequestWorkerThread(this.httpService, conn);
+                    t.setDaemon(true);
+                    t.start();
                 }
             } catch (InterruptedIOException ex) {
                 break;
