@@ -1,25 +1,34 @@
 package com.codepoets.websimple.android;
 
-import org.apache.commons.io.FilenameUtils;
+import com.codepoets.websimple.filesystem.FileSystemFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class AssetManagerFile {
+import static com.codepoets.websimple.filesystem.FileSystemUtils.join;
+import static org.apache.commons.io.FilenameUtils.concat;
+
+public class AssetManagerFile implements FileSystemFile {
+	private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AssetManagerFile.class);
     private String root;
-    private String path;
+	private String basePath;
+	private String path;
     private boolean directory;
-    private List<AssetManagerFile> files;
+    private List<AssetManagerFile> entries;
 
-    public AssetManagerFile(String root, String path) {
-        this(root, path, false);
+    public AssetManagerFile(String root, String basePath, String path) {
+        this(root, basePath, path, false);
     }
 
-    public AssetManagerFile(String root, String path, boolean directory) {
+    public AssetManagerFile(String root, String basePath, String path, boolean directory) {
         this.root = root;
-        this.path = path;
+	    this.basePath = basePath;
+	    this.path = path;
         this.directory = directory;
+	    this.entries = new ArrayList<AssetManagerFile>();
     }
 
+    @Override
     public boolean isDirectory() {
         return directory;
     }
@@ -28,17 +37,42 @@ public class AssetManagerFile {
         this.directory = directory;
     }
 
-    public String getFilePath() {
+	public void addEntry(AssetManagerFile file) {
+		entries.add(file);
+	}
+
+    public String getInternalPath() {
+	    if (basePath == null) {
+		    return root;
+	    }
         if (path == null) {
-            return root;
+
+	        return concat(root, basePath);
         }
-        return FilenameUtils.concat(root, path);
+        return join(join(root, basePath), path);
     }
 
+    @Override
     public String getPath() {
-        if (path == null) {
+        if (basePath == null) {
             return "/";
         }
-        return getFilePath().substring(AssetManagerFileSystem.WEB_ROOT.length());
+        return join(basePath, path);
     }
+
+	@Override
+	public List<? extends FileSystemFile> getEntries() {
+		return entries;
+	}
+
+	@Override
+	public String toString() {
+		return "AssetManagerFile{" +
+				"root='" + root + '\'' +
+				", basePath='" + basePath + '\'' +
+				", path='" + path + '\'' +
+				", num_entries=" + entries.size() +
+				", directory=" + directory +
+				'}';
+	}
 }

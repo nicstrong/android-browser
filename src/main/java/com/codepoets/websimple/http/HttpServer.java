@@ -3,6 +3,7 @@ package com.codepoets.websimple.http;
 import android.content.Context;
 import com.codepoets.websimple.android.AssetManagerFileSystem;
 import com.codepoets.websimple.filesystem.FileSystem;
+import com.codepoets.websimple.filesystem.FileSystemUtils;
 import com.codepoets.websimple.http.handler.DefaultHttpRequestHandlerResolver;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.DefaultHttpResponseFactory;
@@ -58,9 +59,7 @@ public class HttpServer {
         httpService.setParams(this.params);
         httpService.setHandlerResolver(handlerResolver);
 
-        for (String files: fileSystem.getFiles()) {
-            logger.debug("File: " + files);
-        }
+	    FileSystemUtils.dump(logger, fileSystem.root());
     }
 
     public void run() throws IOException {
