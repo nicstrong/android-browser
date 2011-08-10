@@ -1,6 +1,10 @@
 package com.codepoets.websimple.http.handler;
 
+import android.text.Html;
 import com.codepoets.websimple.filesystem.FileSystem;
+import com.codepoets.websimple.filesystem.FileSystemFile;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.http.HttpStatus;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.http.protocol.HttpRequestHandlerResolver;
 
@@ -10,48 +14,32 @@ public class DefaultHttpRequestHandlerResolver implements HttpRequestHandlerReso
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultHttpRequestHandlerResolver.class);
 
     private DefaultHttpRequestHandlerFactory handlerFactory;
-    private boolean dirListingEnabled;
     private FileSystem webRoot;
-    private HttpRequestHandler directoryHandler;
+	private HttpRequestHandler fileHandler;
+	private HttpRequestHandler directoryHandler;
 
     public DefaultHttpRequestHandlerResolver(FileSystem webRoot) {
-        this(webRoot, new DefaultHttpRequestHandlerFactory(true), true);
+        this(webRoot, new DefaultHttpRequestHandlerFactory(webRoot, true));
     }
 
-    public DefaultHttpRequestHandlerResolver(FileSystem webRoot, DefaultHttpRequestHandlerFactory handlerFactory, boolean dirListingEnabled) {
+    public DefaultHttpRequestHandlerResolver(FileSystem webRoot, DefaultHttpRequestHandlerFactory handlerFactory) {
         this.handlerFactory = handlerFactory;
-        this.dirListingEnabled = true;
         this.webRoot = webRoot;
     }
 
     @Override
     public HttpRequestHandler lookup(String requestURI) {
         logger.debug("Mapping {} to request handler", requestURI);
-        File normalisedPath = normalisePath(requestURI);
-        //if (normalisedPath.isDirectory()) {
-            return getDirectoryHandler();
-        //}
-        //return null;
-    }
 
-    public boolean isDirListingEnabled() {
-        return dirListingEnabled;
+	    if (webRoot.exists(requestURI)) {
+		    FileSystemFile file = webRoot.getFile(requestURI);
+		    if (file.isDirectory()) {
+			    return handlerFactory.getDirectoryHandler();
+		    } else {
+			    return handlerFactory.getFileHandler();
+		    }
+	    } else {
+		    return handlerFactory.getErrorHandler(HttpStatus.SC_NOT_FOUND);
+	    }
     }
-
-    public void setDirListingEnabled(boolean dirListingEnabled) {
-        this.dirListingEnabled = dirListingEnabled;
-    }
-
-    private File normalisePath(String requestURI) {
-        //FilenameUtils.normalize();
-        return null;  //To change body of created methods use File | Settings | File Templates.
-    }
-
-    private HttpRequestHandler getDirectoryHandler() {
-        if (directoryHandler == null) {
-            directoryHandler = handlerFactory.getDirectoryHandler();
-        }
-        return directoryHandler;
-    }
-
 }

@@ -1,7 +1,11 @@
 package com.codepoets.websimple.android;
 
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import com.codepoets.websimple.filesystem.FileSystem;
 import com.codepoets.websimple.filesystem.FileSystemFile;
 
+import java.io.IOException;
 import java.util.*;
 
 import static com.codepoets.websimple.filesystem.FileSystemUtils.join;
@@ -9,18 +13,21 @@ import static org.apache.commons.io.FilenameUtils.concat;
 
 public class AssetManagerFile implements FileSystemFile {
 	private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AssetManagerFile.class);
-    private String root;
+	private AssetManager assetManager;
+	private String root;
 	private String basePath;
 	private String path;
     private boolean directory;
+	private Long length;
     private Map<String, AssetManagerFile> entries;
 
-    public AssetManagerFile(String root, String basePath, String path) {
-        this(root, basePath, path, false);
+    public AssetManagerFile(AssetManager assetManager, String root, String basePath, String path) {
+        this(assetManager, root, basePath, path, false);
     }
 
-    public AssetManagerFile(String root, String basePath, String path, boolean directory) {
-        this.root = root;
+    public AssetManagerFile(AssetManager assetManager, String root, String basePath, String path, boolean directory) {
+	    this.assetManager = assetManager;
+	    this.root = root;
 	    this.basePath = basePath;
 	    this.path = path;
         this.directory = directory;
@@ -61,6 +68,22 @@ public class AssetManagerFile implements FileSystemFile {
 	@Override
 	public Collection<? extends FileSystemFile> getEntries() {
 		return entries.values();
+	}
+
+	@Override
+	public long length() throws IOException {
+		if (length == null) {
+			AssetFileDescriptor fd = null;
+			try {
+ 				fd = assetManager.openFd(getInternalPath());
+				length = fd.getLength();
+			} finally {
+				if (fd != null) {
+					fd.close();
+				}
+			}
+		}
+		return length;
 	}
 
 	public AssetManagerFile find(String child) {

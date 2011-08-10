@@ -1,6 +1,7 @@
 package com.codepoets.websimple.http;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 import org.apache.http.ConnectionClosedException;
 import org.apache.http.HttpException;
@@ -30,9 +31,12 @@ class RequestWorkerThread extends Thread {
 		try {
 			while (!Thread.interrupted() && this.conn.isOpen()) {
 				this.httpservice.handleRequest(this.conn, context);
+				logger.debug("Request handled on worker thread");
 			}
+		} catch (SocketTimeoutException ex) {
+			logger.debug("Requester has disconnected");
 		} catch (ConnectionClosedException ex) {
-			logger.error("Client closed connection", ex);
+			logger.debug("Client closed connection");
 		} catch (IOException ex) {
 			logger.error("I/O error", ex);
 		} catch (HttpException ex) {
