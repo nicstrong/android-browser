@@ -1,9 +1,8 @@
 package com.codepoets.websimple.http;
 
 import android.content.Context;
-import com.codepoets.websimple.android.AssetManagerFileSystem;
+import com.codepoets.websimple.filesystem.AssetManagerFileSystem;
 import com.codepoets.websimple.filesystem.FileSystem;
-import com.codepoets.websimple.filesystem.FileSystemUtils;
 import com.codepoets.websimple.http.handler.DefaultHttpRequestHandlerResolver;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.DefaultHttpResponseFactory;
@@ -14,7 +13,6 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.Inet4Address;

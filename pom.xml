@@ -29,32 +29,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <issueManagement>
-    	<system>JIRA</system>
-    	<url>http://issues.spritesoftware.com/secure/Dashboard.jspa</url>
-    </issueManagement>
-    <ciManagement>
-    	<system>Teamcity</system>
-    	<url>http://10.101.144.23:8111/overview.html</url>
-    </ciManagement>
-    <organization>
-    	<name>Sprite Software</name>
-    	<url>http://www.spritesoftware.com</url>
-    </organization>
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <!-- version 2.3 defaults to java 1.5, so no further configuration needed-->
-                    <version>2.3.2</version>
-                    <configuration>
-                      <source>1.6</source>
-                      <target>1.6</target>
-                    </configuration>
-               </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
 </project>

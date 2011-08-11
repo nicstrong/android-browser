@@ -1,14 +1,12 @@
-package com.codepoets.androidbrowser.test.websimple.android;
+package com.codepoets.androidbrowser.test.websimple;
 
 import android.test.AndroidTestCase;
 import android.test.MoreAsserts;
-import android.util.Log;
-import com.codepoets.websimple.android.AssetManagerFileSystem;
+import com.codepoets.websimple.filesystem.AssetManagerFileSystem;
 import com.codepoets.websimple.filesystem.FileSystemFile;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
-import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.Collection;

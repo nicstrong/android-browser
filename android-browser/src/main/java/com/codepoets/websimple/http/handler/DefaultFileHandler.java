@@ -30,7 +30,7 @@ public class DefaultFileHandler extends BaseHttpRequestHandler {
 		logger.debug("Found file  {}", file);
 		try {
 			long length = file.length();
-			logger.debug("{} is {} bytes", length);
+			logger.debug("{} is {} bytes", file.getPath(), length);
 			InputStreamEntity entity = new InputStreamEntity(fileSystem.open(path), length);
 			String ext = FilenameUtils.getExtension(file.getPath());
 			logger.debug("Mapping {} ext to mimetype", ext);
